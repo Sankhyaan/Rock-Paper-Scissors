@@ -5,27 +5,30 @@ const choices = ['rock', 'paper', 'scissors'];
 const WINNING_SCORE = 5;
 
 function RockPaperScissors() {
+
+  // State variables to track player and computer choices, scores, game state, etc.
+  
   const [playerChoice, setPlayerChoice] = useState(null);
   const [computerChoice, setComputerChoice] = useState(null);
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState('');                        
   const [playerScore, setPlayerScore] = useState(0);
   const [computerScore, setComputerScore] = useState(0);
-  const [waiting, setWaiting] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
+  const [waiting, setWaiting] = useState(false);                        // To disable buttons while computer "plays"
+  const [gameOver, setGameOver] = useState(false);                      // To mark if game has ended
 
-  function play(playerSelection) {
+  function play(playerSelection) {                                      // Function to handle the player making a choice and running one round of the game
     if (waiting || gameOver) return;
 
     setPlayerChoice(playerSelection);
-    setWaiting(true);
-    setResult('Computer is playing...');
+    setWaiting(true);                                                     // Disable the buttons while computer chooses it's pick
+    setResult('Computer is playing...');                                 // Show waiting message
 
-    setTimeout(() => {
-      const computerSelection = choices[Math.floor(Math.random() * choices.length)];
+    setTimeout(() => {                                                  
+      const computerSelection = choices[Math.floor(Math.random() * choices.length)];     // Computer randomly picks rock, paper, or scissors
       setComputerChoice(computerSelection);
 
       let roundResult = '';
-      if (playerSelection === computerSelection) {
+      if (playerSelection === computerSelection) {                                       // Determine round result by comparing choices
         roundResult = "It's a tie!";
       } else if (
         (playerSelection === 'rock' && computerSelection === 'scissors') ||
@@ -33,17 +36,17 @@ function RockPaperScissors() {
         (playerSelection === 'scissors' && computerSelection === 'paper')
       ) {
         roundResult = 'You win this round!';
-        setPlayerScore(score => score + 1);
+        setPlayerScore(score => score + 1);                                              // Increment player score
       } else {
         roundResult = 'Computer wins this round!';
-        setComputerScore(score => score + 1);
+        setComputerScore(score => score + 1);                                            // Increment computer score
       }
-      setResult(roundResult);
-      setWaiting(false);
+      setResult(roundResult);                                                            // Show round result
+      setWaiting(false);                                                                 // Re-enable buttons
     }, 1500);
   }
 
-  useEffect(() => {
+  useEffect(() => {                                                      // useEffect runs after every score change to check if someone won the game
     if (playerScore >= WINNING_SCORE) {
       setResult('Game Over! You won!');
       setGameOver(true);
@@ -51,9 +54,9 @@ function RockPaperScissors() {
       setResult('Game Over! Computer won!');
       setGameOver(true);
     }
-  }, [playerScore, computerScore]);
+  }, [playerScore, computerScore]);                                      // Runs when either score changes
 
-  function resetGame() {
+  function resetGame() {                                                 // Reset game to initial state for replay
     setPlayerScore(0);
     setComputerScore(0);
     setPlayerChoice(null);
@@ -62,11 +65,11 @@ function RockPaperScissors() {
     setGameOver(false);
   }
 
-  function capitalize(word) {
+  function capitalize(word) {                                             // Capitalizes the first letter for display purposes
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
-  return (
+  return (                                                                // return this component to render UI of the game
     <div className="rps-container">
       <h1>Rock Paper Scissors</h1>
       <div className="scoreboard">
@@ -77,9 +80,9 @@ function RockPaperScissors() {
         {choices.map(choice => (
           <button 
             key={choice} 
-            onClick={() => play(choice)} 
+            onClick={() => play(choice)}                                   // Call play on click with chosen option
             className={`btn ${choice}`}
-            disabled={waiting || gameOver}
+            disabled={waiting || gameOver}                                 // Disable button if waiting or game over
           >
             {capitalize(choice)}
           </button>
@@ -97,7 +100,7 @@ function RockPaperScissors() {
         result === "It's a tie!" ? 'result-tie' :
         result === 'Computer is playing...' || result.startsWith('Game Over') ? 'result-waiting' : ''
       }>
-        {result}
+        {result}                                                                                        
       </h2>
       {gameOver && <button onClick={resetGame} className="reset-button">Play Again</button>}
     </div>
